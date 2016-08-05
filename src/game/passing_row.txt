@@ -1,0 +1,1 @@
+[](/{abbr}) {abbr} | {pass_completions} | {pass_attempts} | {pass_net_yards} | {pass_touchdowns} | {pass_interceptions} | {pass_completion_percentage} | {pass_efficiency} |

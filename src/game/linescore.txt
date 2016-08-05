@@ -1,0 +1,7 @@
+[](/linescore)**Line Score {final}**
+
+{placeholder}
+||1|2|3|4|Total
+:-|:-:|:-:|:-:|:-:|:-:|
+{away}
+{home}

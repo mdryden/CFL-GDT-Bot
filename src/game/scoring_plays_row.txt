@@ -1,0 +1,1 @@
+{qtr} | {time} | {play} | {away_score} | {home_score}

@@ -1,7 +1,9 @@
 Baseball GDT Bot by Matt Bullock
 =====================================
 
-####Current Version: 3.0.1
+####Current Version: 1.0.0
+
+This fork was created by Michael Dryden, to support game threads on /r/CFL
 
 This project was originally written by Matt Bullock,
 	A.K.A. /u/DetectiveWoofles on reddit and Woofles on GitHub.
@@ -41,17 +43,13 @@ SUBREDDIT - subreddit that you want the threads posted to
 
 TEAM_CODE - three letter code that represents team, look this up
 
-PREGAME_THREAD - do you want a pre game thread?
-
-POST_GAME_THREAD - do you want a post game thread?
+POST_GAME_THREAD - do you want a post game thread? - Not currently supported
 
 SUGGESTED_SORT - what do you want the suggested sort to be? ("confidence", "top", "new", "controversial", "old", "random", "qa", "")
 
 STICKY - do you want the thread stickied? (mod only)
 
-MESSAGE - send submission shortlink to /u/baseballbot
-
-PRE_THREAD_SETTINGS - what to include in the pregame threads
+MESSAGE - send submission shortlink to /u/baseballbot - Not supported (target will be changed if support is added)
 
 THREAD_SETTINGS - what to include in game threads
 
@@ -63,40 +61,19 @@ If something doesn't seem right, feel free to message me or post it as a bug her
 	
 This was written in Python 2.7, so beware if you are running Python 3 or
 	above that it may not work correctly. Also make sure you install
-	praw and simplejson before running!
+	praw, simplejson and dateutil before running!
 	
 Modules being used:
 
 	praw - interfacing reddit
 	simplejson - JSON parsing
+	dateutil - Date parsing
 	urllib2 - pulling data from MLB servers
 	ElementTree - XML parsing
 
 ###Updates
 
-####v3.0.1
-* Now uses OAuth!
+####v1.0.0
+* Initial version forked from Baseball-GDT-Bot
 
-####v3.0.0
-* Modular - If you want a certain feature, just change a variable at the top!
-* Easier to read - Cleaned up some code, started using more OOP.
-
-####v2.0.4
-* Fixed crash caused by game not being aired on TV.
-* Fixed another crash related to scoring plays.
-
-####v2.0.3
-* Fixed the Diamondbacks' subreddit not working properly.
-* Fixed crash related to scoring plays.
-
-####v2.0.2
-
-* Fixed random crashing.
-* Fixed bug where some teams names were not displayed correctly. (Though Chi White Sox White Sox is a great name...)
-
-####v2.0.1
-
-* Fixed gamecheck not always working correctly.
-* Fixed the TV media showing the same for both home and away.
-* Fixed the timestamp on the game/time checks not displaying correctly.
 	

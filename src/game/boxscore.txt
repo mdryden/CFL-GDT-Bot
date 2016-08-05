@@ -1,0 +1,13 @@
+**Boxscore**
+
+{placeholder}
+|               |          |         |             |        |        |        |          |
+:---------------|:--------:|:-------:|:-----------:|:------:|:------:|:------:|:---------:
+**Passing**     | **Cmp**  | **Att** | **Yd**      | **TD** | **INT** | **%** | **Rate** |
+{passing_rows}
+**Rushing**     |          | **Att** | **Yd**      | **TD** |         |       |          |
+{rushing_rows}
+**Receiving**   | **Rec**  | **Tgt** | **Yd**      | **TD** |         |       |          |
+{receiving_rows}
+**Field Goals** | **Made** | **Att** | **Singles** |        |         |       |          |
+{kicking_rows}

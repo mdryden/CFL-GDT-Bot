@@ -1,7 +1,7 @@
 import praw
-r = praw.Reddit('OAuth Baseball-GDT Ver. 3.0.0 Setup')
-r.set_oauth_app_info(client_id='xxx',
-                    client_secret='xxx',
+r = praw.Reddit('OAuth CFL-GDT Ver. 3.0.0 Setup')
+r.set_oauth_app_info(client_id='XXX',
+                    client_secret='XXX',
                     redirect_uri='http://127.0.0.1:65010/authorize_callback')
 								   
 url = r.get_authorize_url('uniqueKey', 'submit edit read modposts privatemessages', True)

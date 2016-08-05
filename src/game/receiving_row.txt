@@ -1,0 +1,1 @@
+[](/{abbr}) {abbr} | {receive_caught} | {receive_attempts} | {receive_yards} | {receive_touchdowns} | | | |

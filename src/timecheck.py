@@ -4,68 +4,41 @@ import urllib2
 import time
 from datetime import datetime
 import simplejson as json
+from dateutil import parser
+from dateutil.tz import *
 
 class TimeCheck:
 
-    def __init__(self,time_before):
-        self.time_before = time_before
+	def __init__(self,time_before):
+		self.time_before = time_before
+		self.currentday = datetime.today()
 
-    def endofdaycheck(self):
-        today = datetime.today()
-        while True:
-            check = datetime.today()
-            if today.day != check.day:
-                print datetime.strftime(check, "%d %I:%M %p")
-                print "NEW DAY"
-                return
-            else:
-                print "Last time check: " + datetime.strftime(check, "%d %I:%M %p")
-                time.sleep(600)
+	def gametoday(self,game):
+		gameStart = parser.parse(game.get('date_start'))
+		#print "today: " + str(today.date()) + ", gameStart: " + str(gameStart.date())
+		#use current day so we can avoid relooping over the same completed games.
+		return datetime.today().date() == gameStart.date()
 
+	def ready(self,game):
+	
+		#if game.get("game_id") == 2302:
+		#	return True
+	
+		if game.get("event_status").get("name") == "Final":
+			return False
+		else:
+			date_object = parser.parse(game.get('date_start'))
+			
+			check = datetime.now(tzutc())
+			diff = date_object - check
+			seconds = (diff.days * 24 * 60 * 60) + diff.seconds
+			
+			#print "Game start: " + str(date_object)
+			#print "Seconds from now: " + str(seconds)
+			#print "Time before: " + str(self.time_before)
+			
+			return seconds <= self.time_before
 
-    def gamecheck(self,dir):
-        while True:
-            try:
-                response = urllib2.urlopen(dir + "linescore.json")
-                break
-            except:
-                check = datetime.today()
-                print datetime.strftime(check, "%d %I:%M %p")
-                print "gamecheck couldn't find file, trying again..."
-                time.sleep(20)
-        jsonfile = json.load(response)
-        game = jsonfile.get('data').get('game')
-        timestring = game.get('time_date') + " " + game.get('ampm')
-        date_object = datetime.strptime(timestring, "%Y/%m/%d %I:%M %p")
-        while True:
-            check = datetime.today()
-            if date_object >= check:
-                if (date_object - check).seconds <= self.time_before:
-                    return
-                else:
-                    print "Last game check: " + datetime.strftime(check, "%d %I:%M %p")
-                    time.sleep(600)
-            else:
-                return
+	def ppcheck(self,game):
+		return False
 
-    def ppcheck(self,dir):
-        try:
-            response = urllib2.urlopen(dir + "linescore.json")
-        except:
-            check = datetime.today()
-            print datetime.strftime(check, "%d %I:%M %p")
-            print "ppcheck Couldn't find file, trying again..."
-            time.sleep(20)
-        jsonfile = json.load(response)
-        game = jsonfile.get('data').get('game')
-        return (game.get('status') == "Postponed")
-
-    def pregamecheck(self,pre_time):
-        date_object = datetime.strptime(pre_time, "%I%p")
-        while True:
-            check = datetime.today()
-            if date_object.hour <= check.hour:
-                return
-            else:
-                print "Last pre-game check: " + datetime.strftime(check, "%d %I:%M %p")
-                time.sleep(600)
