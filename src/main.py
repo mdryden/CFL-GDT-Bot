@@ -158,7 +158,7 @@ class Bot:
 	def get_games(self, timechecker):		
 		today = datetime.today()
 		todayFilter = datetime.strftime(today, "%Y-%m-%d")
-		url = "http://api.cfl.ca/v1/games/" + self.YEAR + "?key=s67KEKp2kyDgvjSLrLwnHBE3nr2GsgKp"
+		url = "http://api.cfl.ca/v1/games/" + self.YEAR + "?key="
 
 		response = ""
 		while not response:
