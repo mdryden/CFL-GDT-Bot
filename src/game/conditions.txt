@@ -1,4 +1,4 @@
 {placeholder}
 Sky | Temp | Wind | Field | Coin Toss
 :---|:----:|:----:|:-----:|:--------
-{sky} | {temp}C | {wind_speed} {wind_dir} | {field} | {coin_toss}
+{sky} | {temp}C | {wind_dir} {wind_speed} | {field} | {coin_toss}

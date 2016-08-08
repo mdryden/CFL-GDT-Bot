@@ -109,7 +109,7 @@ class Editor:
 	def generate_code(self,gameid,type,shortlink):
 		code = ""
 		
-		url = "http://api.cfl.ca/v1/games/" + self.year + "/game/" + str(gameid) + "?include=rosters,boxscore,play_by_play&key=s67KEKp2kyDgvjSLrLwnHBE3nr2GsgKp"
+		url = "http://api.cfl.ca/v1/games/" + self.year + "/game/" + str(gameid) + "?include=rosters,boxscore,play_by_play&key="
 		game = self.get_data(url).get("data")[0]
 		
 		away_abbr = game.get("team_1").get("abbreviation")
@@ -157,8 +157,8 @@ class Editor:
 			code = code.replace("{sky}", weather.get("sky").title())
 			code = code.replace("{temp}", str(weather.get("temperature")))
 			code = code.replace("{wind_speed}", weather.get("wind_speed"))
-			code = code.replace("{wind_dir}", weather.get("wind_direction").lower())
-			code = code.replace("{field}", weather.get("field_conditions"))
+			code = code.replace("{wind_dir}", weather.get("wind_direction").upper())
+			code = code.replace("{field}", weather.get("field_conditions").title())
 		else:
 			code = code.replace("{sky}", "")
 			code = code.replace("{temp}", "")
@@ -186,7 +186,7 @@ class Editor:
 		final = ""
 		
 		if game.get("event_status").get("name") == "Final":
-			final = "- Final"
+			final = " - Final"
 
 		code = code.replace("{final}", final)
 		
@@ -282,13 +282,21 @@ class Editor:
 		
 		return code
 		
-	def get_team_stats_rows(self,rowcode,team1,team2,statname):						
-		code = self.get_team_stats_row(rowcode,team1.get("abbreviation"),team1.get(statname)) + "\n"
+	def get_team_stats_rows(self,rowcode,team1,team2,statname):			
+		code = self.get_team_stats_row(rowcode,team1.get("abbreviation"),team1.get(statname))
+		
+		if code != "":
+			code += "\n"
+		
 		code += self.get_team_stats_row(rowcode,team2.get("abbreviation"),team2.get(statname))
 		
 		return code
 		
-	def get_team_stats_row(self,rowcode,abbr,stats):		
+	def get_team_stats_row(self,rowcode,abbr,stats):
+	
+		if stats == None:
+			return ""
+	
 		code = rowcode
 		code = code.replace("{abbr}", abbr)
 		

@@ -158,7 +158,6 @@ class Bot:
 	def get_games(self, timechecker):		
 		today = datetime.today()
 		todayFilter = datetime.strftime(today, "%Y-%m-%d")
-		#url = "http://api.cfl.ca/v1/games/" + self.YEAR + "?filter[date_start][gt]=" + todayFilter + "&key=s67KEKp2kyDgvjSLrLwnHBE3nr2GsgKp"
 		url = "http://api.cfl.ca/v1/games/" + self.YEAR + "?key=s67KEKp2kyDgvjSLrLwnHBE3nr2GsgKp"
 
 		response = ""
@@ -196,42 +195,41 @@ class Bot:
 				
 				title = edit.generate_title(game,"game")
 				print "Title = " + title
-				#try:
-				posted = False
-				subreddit = r.get_subreddit(self.SUBREDDIT)
-				for submission in subreddit.get_new():
-					if submission.title == title:
-						print "Thread already posted, getting submission..."
-						sub = submission
-						posted = True
-				if not posted:
-					print "Submitting game thread..."
-					sub = r.submit(self.SUBREDDIT, title, edit.generate_code(gameid,"game", ""))
-					print "Game thread submitted..."
-					print "Sleeping for two minutes..."
-					time.sleep(120)
-					if self.STICKY:
-						print "Stickying submission..."
-						sub.sticky()
-						print "Submission stickied..."
-					if self.SUGGESTED_SORT != None:
-						print "Setting suggested sort to " + self.SUGGESTED_SORT + "..."
-						sub.set_suggested_sort(self.SUGGESTED_SORT)
-						print "Suggested sort set..."
-					if self.MESSAGE:
-						print "Messaging Baseballbot..."
-						#r.send_message('baseballbot', 'Gamethread posted', sub.short_link)
-						print "Baseballbot messaged..."
-				print datetime.strftime(datetime.today(), "%d %I:%M %p")
-				time.sleep(5)
-				#except Exception, err:
-				#	print err
-				#	time.sleep(300)
-				pgt_submit = False
-				
-				code = edit.generate_code(gameid,"game", sub.short_link)
-					
 				try:
+					posted = False
+					subreddit = r.get_subreddit(self.SUBREDDIT)
+					for submission in subreddit.get_new():
+						if submission.title == title:
+							print "Thread already posted, getting submission..."
+							sub = submission
+							posted = True
+					if not posted:
+						print "Submitting game thread..."
+						sub = r.submit(self.SUBREDDIT, title, edit.generate_code(gameid,"game", ""))
+						print "Game thread submitted..."
+						print "Sleeping for two minutes..."
+						time.sleep(120)
+						if self.STICKY:
+							print "Stickying submission..."
+							sub.sticky()
+							print "Submission stickied..."
+						if self.SUGGESTED_SORT != None:
+							print "Setting suggested sort to " + self.SUGGESTED_SORT + "..."
+							sub.set_suggested_sort(self.SUGGESTED_SORT)
+							print "Suggested sort set..."
+						if self.MESSAGE:
+							print "Messaging Baseballbot..."
+							#r.send_message('baseballbot', 'Gamethread posted', sub.short_link)
+							print "Baseballbot messaged..."
+					print datetime.strftime(datetime.today(), "%d %I:%M %p")
+					time.sleep(5)
+				except Exception, err:
+					print err
+					time.sleep(300)
+				pgt_submit = False
+									
+				try:
+					code = edit.generate_code(gameid,"game", sub.short_link)
 					sub.edit(code)
 					print "Edits submitted..."
 					print "Sleeping for two minutes..."
