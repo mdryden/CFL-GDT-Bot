@@ -13,11 +13,12 @@ class Editor:
 
 	
 
-	def __init__(self,time_info,thread_settings, post_thread_settings, year):
+	def __init__(self,time_info,thread_settings, post_thread_settings, year, api_key):
 		(self.time_zone,self.time_change,) = time_info
 		(self.thread_tag, (self.header, self.box_score, self.line_score, self.scoring_plays, self.highlights, self.footer)) = thread_settings
 		(self.post_thread_tag, (self.post_header, self.post_box_score, self.post_line_score, self.post_scoring_plays,self.post_highlights, self.post_footer)) = post_thread_settings
 		self.year = year
+		self.api_key = api_key
 		self.subreddits = {
 			"BC": "/r/BC_Lions",
 			"CGY": "/r/Stampeders",
@@ -109,7 +110,7 @@ class Editor:
 	def generate_code(self,gameid,type,shortlink):
 		code = ""
 		
-		url = "http://api.cfl.ca/v1/games/" + self.year + "/game/" + str(gameid) + "?include=rosters,boxscore,play_by_play&key="
+		url = "http://api.cfl.ca/v1/games/" + self.year + "/game/" + str(gameid) + "?include=rosters,boxscore,play_by_play&key=" + self.api_key
 		game = self.get_data(url).get("data")[0]
 		
 		away_abbr = game.get("team_1").get("abbreviation")

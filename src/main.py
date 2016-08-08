@@ -38,6 +38,7 @@ class Bot:
 		self.PRE_THREAD_SETTINGS = None
 		self.THREAD_SETTINGS = None
 		self.POST_THREAD_SETTINGS = None
+		self.API_KEY = None
 
 	def read_settings(self):
 		with open('settings.json') as data:
@@ -54,6 +55,9 @@ class Bot:
 
 			self.REFRESH_TOKEN = settings.get('REFRESH_TOKEN')
 			if self.REFRESH_TOKEN == None: return "Missing REFRESH_TOKEN"	 
+
+			self.API_KEY = settings.get('API_KEY')
+			if self.API_KEY == None: return "Missing API_KEY"
 
 			self.YEAR = settings.get('YEAR')
 			if self.YEAR == None: return "Missing YEAR"		   
@@ -129,7 +133,7 @@ class Bot:
 			print "Invalid time zone settings."
 			return
 
-		edit = editor.Editor(time_info, self.THREAD_SETTINGS, self.POST_THREAD_SETTINGS, self.YEAR)
+		edit = editor.Editor(time_info, self.THREAD_SETTINGS, self.POST_THREAD_SETTINGS, self.YEAR, self.API_KEY)
 
 		if self.BOT_TIME_ZONE == 'ET':
 			time_before = self.POST_TIME * 60 * 60
@@ -158,7 +162,7 @@ class Bot:
 	def get_games(self, timechecker):		
 		today = datetime.today()
 		todayFilter = datetime.strftime(today, "%Y-%m-%d")
-		url = "http://api.cfl.ca/v1/games/" + self.YEAR + "?key="
+		url = "http://api.cfl.ca/v1/games/" + self.YEAR + "?key=" + self.API_KEY
 
 		response = ""
 		while not response:
