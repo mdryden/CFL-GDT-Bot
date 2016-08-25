@@ -39,6 +39,7 @@ class Bot:
 		self.THREAD_SETTINGS = None
 		self.POST_THREAD_SETTINGS = None
 		self.API_KEY = None
+		self.POST_SECONDS_BEFORE = None
 
 	def read_settings(self):
 		with open('settings.json') as data:
@@ -136,24 +137,24 @@ class Bot:
 		edit = editor.Editor(time_info, self.THREAD_SETTINGS, self.POST_THREAD_SETTINGS, self.YEAR, self.API_KEY)
 
 		if self.BOT_TIME_ZONE == 'ET':
-			time_before = self.POST_TIME * 60 * 60
+			self.POST_SECONDS_BEFORE = self.POST_TIME * 60 * 60
 		elif self.BOT_TIME_ZONE == 'CT':
-			time_before = (1 + self.POST_TIME) * 60 * 60
+			self.POST_SECONDS_BEFORE = (1 + self.POST_TIME) * 60 * 60
 		elif self.BOT_TIME_ZONE == 'MT':
-			time_before = (2 + self.POST_TIME) * 60 * 60
+			self.POST_SECONDS_BEFORE = (2 + self.POST_TIME) * 60 * 60
 		elif self.BOT_TIME_ZONE == 'PT':
-			time_before = (3 + self.POST_TIME) * 60 * 60
+			self.POST_SECONDS_BEFORE = (3 + self.POST_TIME) * 60 * 60
 		else:
 			print "Invalid bot time zone settings."
 			return
 
-		timechecker = timecheck.TimeCheck(time_before)
+		timechecker = timecheck.TimeCheck(self.POST_SECONDS_BEFORE)
 
 		while True:
 			games = self.get_games(timechecker)
 			
 			if len(games) > 0:
-				self.game_loop(timechecker, edit, r, games)
+				self.games_loop(timechecker, edit, r, games)
 			
 			print "Sleeping for 10 minutes"
 			print datetime.strftime(datetime.today(), "%d %I:%M %p")
@@ -188,10 +189,14 @@ class Bot:
 			print "No games are ready"
 				
 		return activeGames
-
+	
 	def game_loop(self, timechecker, edit, r, games):
 		
-		while True:
+		loopEnd = datetime.today().date() + datetime.timedelta(seconds=self.POST_SECONDS_BEFORE)
+	
+		print "Looping active games until " + str(date_object)
+	
+		while datetime.today.date() < loopEnd:
 			for i in range(len(games), 0, -1):
 				#print "i = " + str(i)
 				game = games[i-1]
