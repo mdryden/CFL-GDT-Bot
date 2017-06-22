@@ -155,7 +155,7 @@ class Bot:
 			games = self.get_games(timechecker)
 			
 			if len(games) > 0:
-				self.game_loop(timechecker, edit, r, games)
+				self.games_loop(timechecker, edit, r, games)
 			
 			print "Sleeping for 10 minutes"
 			print datetime.strftime(datetime.today(), "%d %I:%M %p")
@@ -193,11 +193,19 @@ class Bot:
 	
 	def game_loop(self, timechecker, edit, r, games):
 		
+<<<<<<< HEAD
 		loopEnd = datetime.now() + timedelta(seconds=60 * 60 * 1)
 	
 		print "Looping active games until " + str(loopEnd)
 	
 		while datetime.now() < loopEnd:
+=======
+		loopEnd = datetime.today().date() + datetime.timedelta(seconds=self.POST_SECONDS_BEFORE)
+	
+		print "Looping active games until " + str(date_object)
+	
+		while datetime.today.date() < loopEnd:
+>>>>>>> 000a347661bc2543633e09a53753b805dd1bffaf
 			for i in range(len(games), 0, -1):
 				#print "i = " + str(i)
 				game = games[i-1]
@@ -235,8 +243,12 @@ class Bot:
 					time.sleep(5)
 				except Exception, err:
 					print err
+<<<<<<< HEAD
 					print "Sleeping for two minutes..."
 					time.sleep(120)
+=======
+					time.sleep(300)
+>>>>>>> 000a347661bc2543633e09a53753b805dd1bffaf
 				pgt_submit = False
 									
 				try:

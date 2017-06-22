@@ -3,6 +3,7 @@
     "CLIENT_SECRET": "XXX",
     "REDIRECT_URI": "http://127.0.0.1:65010/authorize_callback",
     "REFRESH_TOKEN": "XXX",
+	"API_KEY": "XXX",
 	"YEAR": "2016",
     "BOT_TIME_ZONE": "ET",
     "TEAM_TIME_ZONE": "ET",
