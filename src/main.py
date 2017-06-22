@@ -13,6 +13,7 @@ Please contact us on Reddit or Github if you have any questions.
 
 import editor
 from datetime import datetime
+from datetime import timedelta
 import timecheck
 import time
 import simplejson as json
@@ -38,6 +39,8 @@ class Bot:
 		self.PRE_THREAD_SETTINGS = None
 		self.THREAD_SETTINGS = None
 		self.POST_THREAD_SETTINGS = None
+		self.API_KEY = None
+		self.POST_SECONDS_BEFORE = None
 
 	def read_settings(self):
 		with open('settings.json') as data:
@@ -54,6 +57,9 @@ class Bot:
 
 			self.REFRESH_TOKEN = settings.get('REFRESH_TOKEN')
 			if self.REFRESH_TOKEN == None: return "Missing REFRESH_TOKEN"	 
+
+			self.API_KEY = settings.get('API_KEY')
+			if self.API_KEY == None: return "Missing API_KEY"
 
 			self.YEAR = settings.get('YEAR')
 			if self.YEAR == None: return "Missing YEAR"		   
@@ -129,21 +135,21 @@ class Bot:
 			print "Invalid time zone settings."
 			return
 
-		edit = editor.Editor(time_info, self.THREAD_SETTINGS, self.POST_THREAD_SETTINGS, self.YEAR)
+		edit = editor.Editor(time_info, self.THREAD_SETTINGS, self.POST_THREAD_SETTINGS, self.YEAR, self.API_KEY)
 
 		if self.BOT_TIME_ZONE == 'ET':
-			time_before = self.POST_TIME * 60 * 60
+			self.POST_SECONDS_BEFORE = self.POST_TIME * 60 * 60
 		elif self.BOT_TIME_ZONE == 'CT':
-			time_before = (1 + self.POST_TIME) * 60 * 60
+			self.POST_SECONDS_BEFORE = (1 + self.POST_TIME) * 60 * 60
 		elif self.BOT_TIME_ZONE == 'MT':
-			time_before = (2 + self.POST_TIME) * 60 * 60
+			self.POST_SECONDS_BEFORE = (2 + self.POST_TIME) * 60 * 60
 		elif self.BOT_TIME_ZONE == 'PT':
-			time_before = (3 + self.POST_TIME) * 60 * 60
+			self.POST_SECONDS_BEFORE = (3 + self.POST_TIME) * 60 * 60
 		else:
 			print "Invalid bot time zone settings."
 			return
 
-		timechecker = timecheck.TimeCheck(time_before)
+		timechecker = timecheck.TimeCheck(self.POST_SECONDS_BEFORE)
 
 		while True:
 			games = self.get_games(timechecker)
@@ -158,8 +164,7 @@ class Bot:
 	def get_games(self, timechecker):		
 		today = datetime.today()
 		todayFilter = datetime.strftime(today, "%Y-%m-%d")
-		#url = "http://api.cfl.ca/v1/games/" + self.YEAR + "?filter[date_start][gt]=" + todayFilter + "&key=s67KEKp2kyDgvjSLrLwnHBE3nr2GsgKp"
-		url = "http://api.cfl.ca/v1/games/" + self.YEAR + "?key=s67KEKp2kyDgvjSLrLwnHBE3nr2GsgKp"
+		url = "http://api.cfl.ca/v1/games/" + self.YEAR + "?key=" + self.API_KEY
 
 		response = ""
 		while not response:
@@ -185,10 +190,14 @@ class Bot:
 			print "No games are ready"
 				
 		return activeGames
-
+	
 	def game_loop(self, timechecker, edit, r, games):
 		
-		while True:
+		loopEnd = datetime.now() + timedelta(seconds=60 * 60 * 1)
+	
+		print "Looping active games until " + str(loopEnd)
+	
+		while datetime.now() < loopEnd:
 			for i in range(len(games), 0, -1):
 				#print "i = " + str(i)
 				game = games[i-1]
@@ -196,42 +205,42 @@ class Bot:
 				
 				title = edit.generate_title(game,"game")
 				print "Title = " + title
-				#try:
-				posted = False
-				subreddit = r.get_subreddit(self.SUBREDDIT)
-				for submission in subreddit.get_new():
-					if submission.title == title:
-						print "Thread already posted, getting submission..."
-						sub = submission
-						posted = True
-				if not posted:
-					print "Submitting game thread..."
-					sub = r.submit(self.SUBREDDIT, title, edit.generate_code(gameid,"game", ""))
-					print "Game thread submitted..."
+				try:
+					posted = False
+					subreddit = r.get_subreddit(self.SUBREDDIT)
+					for submission in subreddit.get_new():
+						if submission.title == title:
+							print "Thread already posted, getting submission..."
+							sub = submission
+							posted = True
+					if not posted:
+						print "Submitting game thread..."
+						sub = r.submit(self.SUBREDDIT, title, edit.generate_code(gameid,"game", ""))
+						print "Game thread submitted..."
+						print "Sleeping for two minutes..."
+						time.sleep(120)
+						if self.STICKY:
+							print "Stickying submission..."
+							sub.sticky()
+							print "Submission stickied..."
+						if self.SUGGESTED_SORT != None:
+							print "Setting suggested sort to " + self.SUGGESTED_SORT + "..."
+							sub.set_suggested_sort(self.SUGGESTED_SORT)
+							print "Suggested sort set..."
+						if self.MESSAGE:
+							print "Messaging Baseballbot..."
+							#r.send_message('baseballbot', 'Gamethread posted', sub.short_link)
+							print "Baseballbot messaged..."
+					print datetime.strftime(datetime.today(), "%d %I:%M %p")
+					time.sleep(5)
+				except Exception, err:
+					print err
 					print "Sleeping for two minutes..."
 					time.sleep(120)
-					if self.STICKY:
-						print "Stickying submission..."
-						sub.sticky()
-						print "Submission stickied..."
-					if self.SUGGESTED_SORT != None:
-						print "Setting suggested sort to " + self.SUGGESTED_SORT + "..."
-						sub.set_suggested_sort(self.SUGGESTED_SORT)
-						print "Suggested sort set..."
-					if self.MESSAGE:
-						print "Messaging Baseballbot..."
-						#r.send_message('baseballbot', 'Gamethread posted', sub.short_link)
-						print "Baseballbot messaged..."
-				print datetime.strftime(datetime.today(), "%d %I:%M %p")
-				time.sleep(5)
-				#except Exception, err:
-				#	print err
-				#	time.sleep(300)
 				pgt_submit = False
-				
-				code = edit.generate_code(gameid,"game", sub.short_link)
-					
+									
 				try:
+					code = edit.generate_code(gameid,"game", sub.short_link)
 					sub.edit(code)
 					print "Edits submitted..."
 					print "Sleeping for two minutes..."

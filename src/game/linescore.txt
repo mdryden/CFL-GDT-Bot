@@ -1,4 +1,4 @@
-[](/linescore)**Line Score {final}**
+[](/linescore)**Line Score{final}**
 
 {placeholder}
 ||1|2|3|4|Total
